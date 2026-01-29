@@ -22,9 +22,15 @@ char total_deliveries;
 
 int choice() {
     short number;
+    bool valid = false;
+    while (!valid) {
     std::cout << "Enter the number corresponding to the choice\n";
-std::cout << " Earn by Time (1) or Earn by Offer (2)?\n";\
-std::cin >> number;
+std::cout << " Earn by Time (1) or Earn by Offer (2)?\n";
+
+
+
+    }
+
 }
 
 void dash_logger(DashSessionStats &Stats){
