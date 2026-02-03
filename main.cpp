@@ -7,6 +7,7 @@
 #include <ctime>
 #include <chrono>
 #include <thread>
+#include <limits>
 
 
 /* Date (Using Chrono) , Minutes Elapsed , Total Milage , Tips, Flat Earnings , Total Deliveries */
@@ -19,24 +20,36 @@ float flat_pay;
 char total_deliveries;
 };
 // Reminder to exception handle before final choice is processed and sent to dash_logger!!!
-int choice() {
+
+template <typename T>
+    bool readValue(T& out) {
+    if (std::cin >> out) {
+        return true;
+    } else {
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        return false;
+    }
+}
+short choice() {
     short number;
+    bool validInput{false};
     std::cout << "Enter the number corresponding to the choice.\n";
     std::cout << "Earn by Offer (1) or Earn by Time (2)?\n";
     std::cin >> number;
-bool doloop{true};
-    while (doloop) {
-        if (number == 1)
-        break;
-        if (number == 2)
-            break;
-
-    }
-
-        std::cout << "Invalid Number. Please Try Again.";
+    while (!validInput) {
+        if (readValue(number)) {
+            if (number == 1 || number == 2) {
+            validInput = true;
+        } else {
+            std::cout << "Please Enter either 1 (EBO) or 2 (EBT)\n";
+        }
+    } else {
+        std::cout << "Invalid Input. Please Enter a Number\n";
     }
 }
-
+return number;
+}
 void dash_logger(DashSessionStats &Stats) {
     std::ofstream statFile("d_log.csv", std::ios::app);
 
@@ -55,12 +68,14 @@ void dash_logger(DashSessionStats &Stats) {
     std::cin >> Stats.flat_pay;
     std::cout << "Total Deliveries:\n";
     std::cin >> Stats.total_deliveries;
-    int num {choice()};
-    if  (num == 1) {
+    std::cout << std::endl;
+    if  (const short num {choice()}; num == 1) {
+        std::cout << "Earn by Offer";
         statFile << "Earn by Offer";
 
     }
     else if (num == 2) {
+        std::cout << "Earn by Time";
         statFile << "Earn by Time";
     }
     else {
