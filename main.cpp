@@ -8,6 +8,7 @@
 #include <chrono>
 #include <thread>
 #include <limits>
+#include <cstdio>
 
 
 /* Date (Using Chrono) , Minutes Elapsed , Total Milage , Tips, Flat Earnings , Total Deliveries */
@@ -50,6 +51,8 @@ short choice() {
 }
 return number;
 }
+
+
 void dash_logger(DashSessionStats &Stats) {
     std::ofstream statFile("d_log.csv", std::ios::app);
 
@@ -57,6 +60,7 @@ void dash_logger(DashSessionStats &Stats) {
         std::cout << "ERROR OPENING d_log.csv!!!\n";
         return;
     }
+
     std::cout << "Enter the data from your concluded dash.\n";
     std::cout << "Minutes:\n";
     std::cin >> Stats.minutes;
@@ -69,22 +73,23 @@ void dash_logger(DashSessionStats &Stats) {
     std::cout << "Total Deliveries:\n";
     std::cin >> Stats.total_deliveries;
     std::cout << std::endl;
+
     if  (const short num {choice()}; num == 1) {
+        const char *mode = nullptr;
         std::cout << "Earn by Offer";
-        statFile << "Earn by Offer";
+         mode == "Earn by Offer";
 
     }
     else if (num == 2) {
         std::cout << "Earn by Time";
-        statFile << "Earn by Time";
+
     }
     else {
         std::cout << "Error in Choice: dash_logger";
 
         }
-        statFile << Stats.minutes << "\n" << Stats.milage << "\n " << Stats.tips << "\n" << Stats.flat_pay << "\n" << Stats.total_deliveries << "\n";
+    statFile << "Minutes: " << Stats.minutes << "\n" << "Milage: " << Stats.milage << "\n" << "Tips: " << Stats.tips << "\n" << "Flat Pay: " << Stats.flat_pay << "\n" << "Total Deliveries: " << Stats.total_deliveries << "\n" << "Method: " << Stats.mode;
         statFile.close();
-
 
     }
 
