@@ -4,11 +4,10 @@
 #include <fstream>
 #include <iostream>
 #include <string>
-#include <ctime>
-#include <chrono>
 #include <thread>
 #include <limits>
 #include <cstdio>
+#include "date.h"
 
 
 /* Date (Using Chrono) , Minutes Elapsed , Total Milage , Tips, Flat Earnings , Total Deliveries */
@@ -73,6 +72,7 @@ void dash_logger(DashSessionStats &Stats) {
     std::cout << "Total Deliveries:\n";
     std::cin >> Stats.total_deliveries;
     std::cout << std::endl;
+    std::cout << getCurrentDate();
 
     if  (const short num {choice()}; num == 1) {
         const char *mode = nullptr;
