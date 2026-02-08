@@ -59,12 +59,15 @@ void dash_logger(DashSessionStats &Stats) {
         std::cout << "ERROR OPENING d_log.csv!!!\n";
         return;
     }
+    statFile << getCurrentDate() << "\n";
 
     std::cout << "Enter the data from your concluded dash.\n";
     std::cout << "Minutes:\n";
     std::cin >> Stats.minutes;
     std::cout << "Total Mileage:\n";
     std::cin >> Stats.milage;
+    std::cout << std::showpoint;
+    std::cout << std::setprecision(2);
     std::cout << "Tips:\n";
     std::cin >> Stats.tips;
     std::cout << "Flat Earnings:\n";
@@ -72,23 +75,26 @@ void dash_logger(DashSessionStats &Stats) {
     std::cout << "Total Deliveries:\n";
     std::cin >> Stats.total_deliveries;
     std::cout << std::endl;
-    std::cout << getCurrentDate();
 
     if  (const short num {choice()}; num == 1) {
-        const char *mode = nullptr;
+        std::string EBO = "Earn by Offer";
         std::cout << "Earn by Offer";
-         mode == "Earn by Offer";
+        statFile << "Mode: " << EBO << "\n";
+
 
     }
     else if (num == 2) {
+        std::string EBT = "Earn by Time";
         std::cout << "Earn by Time";
+        statFile << "Mode: " << EBT << "\n";
 
     }
     else {
         std::cout << "Error in Choice: dash_logger";
 
         }
-    statFile << "Minutes: " << Stats.minutes << "\n" << "Milage: " << Stats.milage << "\n" << "Tips: " << Stats.tips << "\n" << "Flat Pay: " << Stats.flat_pay << "\n" << "Total Deliveries: " << Stats.total_deliveries << "\n" << "Method: " << Stats.mode;
+
+    statFile << "Minutes: " << Stats.minutes << "\n" << "Milage: " << Stats.milage << "\n" << "Tips: " << Stats.tips << "\n" << "Flat Pay: " << Stats.flat_pay << "\n" << "Total Deliveries: " << Stats.total_deliveries << "\n" <;
         statFile.close();
 
     }
