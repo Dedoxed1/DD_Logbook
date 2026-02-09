@@ -12,7 +12,7 @@
     std::tm localTime = *std::localtime(&t);
 
     std::ostringstream oss;
-    oss << std::put_time(&localTime, "%m-%d-%Y");
+    oss << std::put_time(&localTime, "%m-%d-%Y " "%I:%M:%S %p");
     return oss.str();
 
 }
