@@ -6,21 +6,21 @@
 #include <string>
 #include <thread>
 #include <limits>
-#include <cstdio>
 #include "date.h"
 
 
 /* Date (Using Chrono) , Minutes Elapsed , Total Milage , Tips, Flat Earnings , Total Deliveries */
 
 struct DashSessionStats{
-long minutes;
+short int minutes;
 unsigned short int milage;
+unsigned short int total_deliveries;
 float tips;
 float flat_pay;
-char total_deliveries;
-};
-// Reminder to exception handle before final choice is processed and sent to dash_logger!!!
 
+};
+
+// Template for choice()
 template <typename T>
     bool readValue(T& out) {
     if (std::cin >> out) {
@@ -31,26 +31,33 @@ template <typename T>
         return false;
     }
 }
-short choice() {
-    short number;
-    bool validInput{false};
-    std::cout << "Enter the number corresponding to the choice.\n";
-    std::cout << "Earn by Offer (1) or Earn by Time (2)?\n";
-    std::cin >> number;
-    while (!validInput) {
-        if (readValue(number)) {
-            if (number == 1 || number == 2) {
-            validInput = true;
-        } else {
-            std::cout << "Please Enter either 1 (EBO) or 2 (EBT)\n";
-        }
-    } else {
-        std::cout << "Invalid Input. Please Enter a Number\n";
+// Template for checkInput in dash_logger()
+template <typename T>
+void checkInput(const std::string& prompt, T& value) {
+    while (true) {
+        std::cout << prompt;
+        if (std::cin >> value)
+            return;
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cout << "Invalid Input.\n";
     }
 }
-return number;
-}
+short choice() {
+    short number;
+    while (true) {
+        std::cout << "Enter the number corresponding to the choice.\n";
+        std::cout << "Earn by Offer (1) or Earn by Time (2)?\n";
 
+        if (!readValue(number)) {
+            std::cout << "Invalid Input.";
+            continue;
+        }
+        if (number == 1 || number == 2) {
+            return number;
+        }
+    }
+}
 
 void dash_logger(DashSessionStats &Stats) {
     std::ofstream statFile("d_log.csv", std::ios::app);
@@ -61,46 +68,28 @@ void dash_logger(DashSessionStats &Stats) {
     }
     statFile << getCurrentDate() << "\n";
 
-    std::cout << "Enter the data from your concluded dash.\n";
-    std::cout << "Minutes:\n";
-    std::cin >> Stats.minutes;
-    std::cout << "Total Mileage:\n";
-    std::cin >> Stats.milage;
-    std::cout << std::showpoint;
-    std::cout << std::setprecision(2);
-    std::cout << "Tips:\n";
-    std::cin >> Stats.tips;
-    std::cout << "Flat Earnings:\n";
-    std::cin >> Stats.flat_pay;
-    std::cout << "Total Deliveries:\n";
-    std::cin >> Stats.total_deliveries;
-    std::cout << std::endl;
+checkInput("Minutes:\n", Stats.minutes);
+checkInput("Milage:\n", Stats.milage);
+checkInput("Tips:\n", Stats.tips);
+checkInput("Flat Pay:\n", Stats.flat_pay);
+checkInput("Deliveries:\n", Stats.total_deliveries);
 
-    if  (const short num {choice()}; num == 1) {
-        std::string EBO = "Earn by Offer";
-        std::cout << "Earn by Offer";
-        statFile << "Mode: " << EBO << "\n";
-
+  const short num{choice()};
+    if (num == 1) {
+        std::cout << "Earn by Offer\n";
+    }
+    if (num == 2) {
+        std::cout << "Earn by Time\n";
 
     }
-    else if (num == 2) {
-        std::string EBT = "Earn by Time";
-        std::cout << "Earn by Time";
-        statFile << "Mode: " << EBT << "\n";
 
-    }
-    else {
-        std::cout << "Error in Choice: dash_logger";
-
-        }
-
-    statFile << "Minutes: " << Stats.minutes << "\n" << "Milage: " << Stats.milage << "\n" << "Tips: " << Stats.tips << "\n" << "Flat Pay: " << Stats.flat_pay << "\n" << "Total Deliveries: " << Stats.total_deliveries << "\n" <;
+    statFile << "Minutes: " << Stats.minutes << "\n" << "Milage: " << Stats.milage << "\n" << "Tips: $" << std::fixed << std::setprecision(2) << Stats.tips << "\n" << "Flat Pay: $" << Stats.flat_pay << "\n" << "Total Deliveries: " << std::noshowpoint << Stats.total_deliveries << "\n" << "\n";
         statFile.close();
 
     }
 
 int main() {
-DashSessionStats Stats;
+DashSessionStats Stats{};
 
 dash_logger(Stats);
 
