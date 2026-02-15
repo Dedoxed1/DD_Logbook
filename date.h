@@ -38,7 +38,6 @@ inline void WelcomeScreen() {
     std::tm local = *std::localtime(&t);
  int hour = local.tm_hour;
     std::cout << "===== DASH LOGGER =====\n";
-    std::cout << hour;
     std::this_thread::sleep_for(std::chrono::seconds(2));
     if (hour < 12) {
         std::cout << "Good Morning!\n";
