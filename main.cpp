@@ -10,7 +10,6 @@
 #include "totals_io.h"
 #include "temps.h"
 
-
 struct DashSessionStats{
 short int minutes;
 unsigned short int milage;
@@ -143,19 +142,7 @@ std::cout << "Data has been written to Stats.csv";
     saveTotals(weeklyEarnings.get(), monthlyEarnings.get(),yearlyEarnings.get());
 }
 
-// Function for receiving input from user, check validation, and returning it back to menuHandler
 
-int getMenuChoice() {
-    int choice;
-    while (true) {
-        std::cout << "Enter Choice (1-4)\n";
-        readValue(choice);
-        if (choice >= 1 && choice <=4)
-            return choice;
-
-        std::cout << "Invalid Input.";
-    }
-}
 // Function for opening and reading of files.
 
 void displayFile(const std::string& actualFile) {
@@ -171,8 +158,7 @@ std::cout << line << "\n";
     }
     file.close();
 }
-//Switch used for handling menu Output.
-
+//Switch used for handling menu output.
 bool menuHandler(int base) {
     switch (base) {
         case 1: {
@@ -186,18 +172,20 @@ bool menuHandler(int base) {
         }
         case 3: {
             displayFile("d_log.txt");
+            break;
         }
         case 4: {
             return false;
         }
+
     }
     return true;
 }
-int main() {
-// Found in date.h
-WelcomeScreen();
-// Might need optimization... / clean up
-std::cout << "Would you like to:\n";
+
+
+
+void introText() {
+    std::cout << "Would you like to:\n";
     std::this_thread::sleep_for(std::chrono::seconds(1));
     std::cout << "(1) Record a recent Dash.\n";
     std::this_thread::sleep_for(std::chrono::seconds(1));
@@ -206,11 +194,44 @@ std::cout << "Would you like to:\n";
     std::cout << "(3) View previously logged Dashes\n";
     std::this_thread::sleep_for(std::chrono::seconds(1));
     std::cout << "(4) Exit\n";
+}
 
-menuHandler(getMenuChoice());
+
+// Function for receiving input from user, check validation, and returning it back to menuHandler
+
+int getMenuChoice() {
+    int choice;
+    while (true) {
+        std::cout << "Enter Choice (1-4)\n";
+        readValue(choice);
+        if (choice >= 1 && choice <=4)
+            return choice;
+        std::cout << "Invalid Input.";
+    }
+}
 
 
-return 0;
+int main() {
+// Found in date.h. Include date and time output.
+WelcomeScreen();
+
+    while (true) {
+        introText();
+
+int choice = getMenuChoice();
+
+        if (!menuHandler(choice))
+            break;
+        std::cout << "\nPress Enter to return to menu.";
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cin.get();
+    }
+
+    std::cout << "\nGoodbye!\n";
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+    return 0;
+
+
 }
 
 
