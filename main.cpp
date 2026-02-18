@@ -5,13 +5,14 @@
 #include <iostream>
 #include <string>
 #include <thread>
+#include <vector>
 #include "date.h"
 #include "w_m_y_totals.h"
 #include "totals_io.h"
 #include "temps.h"
 
 struct DashSessionStats{
-short int minutes;
+unsigned short int minutes;
 unsigned short int milage;
 unsigned short int total_deliveries;
 float tips;
@@ -92,7 +93,8 @@ checkInput("Tips:\n$", Stats.tips);
 checkInput("Flat Pay:\n$", Stats.flat_pay);
 checkInput("Deliveries:\n", Stats.total_deliveries);
 
-// Calculate to assign values to respective struct member .
+// Calculate to assign values to respective struct member.
+
 Stats.dollar_per_mile = (Stats.flat_pay + Stats.tips) / static_cast<float>(Stats.milage);
 Stats.dollar_per_delivery = (Stats.flat_pay + Stats.tips) / static_cast<float>(Stats.total_deliveries);
 Stats.dollar_per_hour = (Stats.flat_pay + Stats.tips) / static_cast<float>(Stats.minutes / 60.0f);
@@ -106,6 +108,7 @@ Stats.dollar_per_hour = (Stats.flat_pay + Stats.tips) / static_cast<float>(Stats
         std::cout << "Earn by Time\n";
 
     }
+
 // Add flat_pay and tips to earnings.
 float earnings{Stats.flat_pay + Stats.tips};
     weeklyEarnings.add(earnings);
@@ -129,15 +132,29 @@ float earnings{Stats.flat_pay + Stats.tips};
     earnFile.close();
 
 
-// Receives num2 from choice2() and either writes to Stats.csv or to skip.
+/* Receives num2 from choice2() and either writes to Stats.csv or to skip.
+Uses <vector> to store all objects in the struct to writes them to the file one by one. */
 
 const short num2{choice2()};
     if (num2 == 1) {
         std::ofstream csvFile ("Stats.csv", std::ios::app);
-        csvFile << getCurrentDatenoT() << "," << Stats.minutes << "," << Stats.milage << "," <<  Stats.total_deliveries << "," << std::fixed << std::setprecision(2) << Stats.tips << ","
-            << Stats.flat_pay << "," << Stats.dollar_per_mile << "," << Stats.dollar_per_delivery << "," <<  Stats.dollar_per_hour << "\n";
+        csvFile << getCurrentDatenoT() << "\n";
+
+        std::vector<unsigned short int> data1;
+        data1 = {Stats.minutes,Stats.milage,Stats.total_deliveries};
+
+        std::vector<float> data2;
+        data2 = {Stats.tips,Stats.flat_pay,Stats.dollar_per_mile,Stats.dollar_per_mile, Stats.dollar_per_hour};
+
+        for (unsigned short int i1 : data1) {
+            csvFile << i1 << ",";
+        }
+
+        for (float i2 : data2) {
+            csvFile << std::fixed << std::setprecision(2) << i2 << ",";
+        }
 csvFile.close();
-std::cout << "Data has been written to Stats.csv";
+std::cout << "Data has been written to Stats.csv.";
     }
     saveTotals(weeklyEarnings.get(), monthlyEarnings.get(),yearlyEarnings.get());
 }
@@ -187,7 +204,7 @@ bool menuHandler(int base) {
 void introText() {
     std::cout << "Would you like to:\n";
     std::this_thread::sleep_for(std::chrono::seconds(1));
-    std::cout << "(1) Record a recent Dash.\n";
+    std::cout << "(1) Record a recent Dash\n";
     std::this_thread::sleep_for(std::chrono::seconds(1));
     std::cout << "(2) View Weekly/Monthly/YTD Earnings\n";
     std::this_thread::sleep_for(std::chrono::seconds(1));
