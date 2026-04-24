@@ -1,0 +1,14 @@
+build/
+cmake-build-*/
+*.exe
+*.dll
+*.o
+*.obj
+
+Earnings.txt
+Stats.csv
+d_log.txt
+totals.dat
+
+.vscode/
+.idea/
