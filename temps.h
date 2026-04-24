@@ -1,5 +1,7 @@
 #pragma once
-#include "temps.h"
+#include <iostream>
+#include <limits>
+#include <string>
 
 // Template for choice() and getMenuChoice()
 template <typename T>

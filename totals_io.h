@@ -2,7 +2,6 @@
 
 #include <fstream>
 #include <string>
-#include "totals_io.h"
 // Header file for storing value of totals outside of program so they can be called back later during execution.
 
 inline void loadTotals(float& weekly, float& monthly, float& yearly) {

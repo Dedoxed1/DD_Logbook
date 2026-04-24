@@ -13,7 +13,7 @@
 
 struct DashSessionStats{
 unsigned short int minutes;
-unsigned short int milage;
+unsigned short int mileage;
 unsigned short int total_deliveries;
 float tips;
 float flat_pay;
@@ -21,6 +21,17 @@ float dollar_per_mile;
 float dollar_per_delivery;
 float dollar_per_hour;
 };
+
+template <typename T>
+void checkPositiveInput(const std::string& prompt, T& value) {
+    while (true) {
+        checkInput(prompt, value);
+        if (value > 0) {
+            return;
+        }
+        std::cout << "Value must be greater than zero.\n";
+    }
+}
 
 
 // Function checking validation and returning it back to dash_logger()
@@ -87,15 +98,15 @@ if (!totalsLoaded) {
     statFile << getCurrentDate() << "\n";
 
 //Simplified. Checks input then returns value to respective struct member.
-checkInput("Minutes:\n", Stats.minutes);
-checkInput("Milage:\n", Stats.milage);
+checkPositiveInput("Minutes:\n", Stats.minutes);
+checkPositiveInput("Milage:\n", Stats.mileage);
 checkInput("Tips:\n$", Stats.tips);
 checkInput("Flat Pay:\n$", Stats.flat_pay);
-checkInput("Deliveries:\n", Stats.total_deliveries);
+checkPositiveInput("Deliveries:\n", Stats.total_deliveries);
 
 // Calculate to assign values to respective struct member.
 
-Stats.dollar_per_mile = (Stats.flat_pay + Stats.tips) / static_cast<float>(Stats.milage);
+Stats.dollar_per_mile = (Stats.flat_pay + Stats.tips) / static_cast<float>(Stats.mileage);
 Stats.dollar_per_delivery = (Stats.flat_pay + Stats.tips) / static_cast<float>(Stats.total_deliveries);
 Stats.dollar_per_hour = (Stats.flat_pay + Stats.tips) / static_cast<float>(Stats.minutes / 60.0f);
 
@@ -117,7 +128,7 @@ float earnings{Stats.flat_pay + Stats.tips};
 
     // Output ONLY to d_log and NOT IN CSV format!
 
-    statFile << "Minutes: " << Stats.minutes << "\n" << "Milage: " << Stats.milage << " mi\n" << "Total Deliveries: " <<  Stats.total_deliveries << "\n" << "Tips: $" << std::fixed << std::setprecision(2) << Stats.tips << "\n"
+    statFile << "Minutes: " << Stats.minutes << "\n" << "Milage: " << Stats.mileage << " mi\n" << "Total Deliveries: " <<  Stats.total_deliveries << "\n" << "Tips: $" << std::fixed << std::setprecision(2) << Stats.tips << "\n"
     << "Flat Pay: $" << Stats.flat_pay << "\n" << "Dollar per Mile: $" << Stats.dollar_per_mile << "\n" << "Dollar per Delivery: $" << Stats.dollar_per_delivery << "\n" << "Estimated Dollar per Hour: $" << Stats.dollar_per_hour << "\n" << "\n";
         statFile.close();
 
@@ -138,13 +149,16 @@ Uses <vector> to store all objects in the struct to writes them to the file one 
 const short num2{choice2()};
     if (num2 == 1) {
         std::ofstream csvFile ("Stats.csv", std::ios::app);
-        csvFile << getCurrentDatenoT() << "\n";
+        if (!csvFile.is_open()) {
+            std::cout << "Error opening Stats.csv.\n";
+        } else {
+        csvFile << getCurrentDatenoT() << ",";
 
         std::vector<unsigned short int> data1;
-        data1 = {Stats.minutes,Stats.milage,Stats.total_deliveries};
+        data1 = {Stats.minutes,Stats.mileage,Stats.total_deliveries};
 
         std::vector<float> data2;
-        data2 = {Stats.tips,Stats.flat_pay,Stats.dollar_per_mile,Stats.dollar_per_mile, Stats.dollar_per_hour};
+        data2 = {Stats.tips,Stats.flat_pay,Stats.dollar_per_mile,Stats.dollar_per_delivery, Stats.dollar_per_hour};
 
         for (unsigned short int i1 : data1) {
             csvFile << i1 << ",";
@@ -153,8 +167,10 @@ const short num2{choice2()};
         for (float i2 : data2) {
             csvFile << std::fixed << std::setprecision(2) << i2 << ",";
         }
-csvFile.close();
-std::cout << "Data has been written to Stats.csv.";
+        csvFile << "\n";
+        csvFile.close();
+        std::cout << "Data has been written to Stats.csv.";
+        }
     }
     saveTotals(weeklyEarnings.get(), monthlyEarnings.get(),yearlyEarnings.get());
 }

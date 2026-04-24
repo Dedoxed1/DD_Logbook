@@ -1,7 +1,12 @@
 #pragma once
 #include <chrono>
 #include <ctime>
-#include "w_m_y_totals.h"
+
+inline std::tm getLocalTimeNow() {
+    auto now = std::chrono::system_clock::now();
+    std::time_t t = std::chrono::system_clock::to_time_t(now);
+    return *std::localtime(&t);
+}
 
 // Encapsulation used. New class used for determining (Week, Month, Year)
 class WeeklyTotal {
@@ -13,9 +18,7 @@ private:
 public:
     WeeklyTotal() : year(0), week(0), total(0.0) {}
     void add(float amount) {
-        auto now = std::chrono::system_clock::now();
-        std::time_t t = std::chrono::system_clock::to_time_t(now);
-        std::tm local = *std::localtime(&t);
+        const std::tm local = getLocalTimeNow();
 
         int currentYear = local.tm_year + 1900;
         int currentWeek = local.tm_yday / 7;
@@ -31,6 +34,9 @@ total += amount;
         return total;
     }
     void set(float value) {
+        const std::tm local = getLocalTimeNow();
+        year = local.tm_year + 1900;
+        week = local.tm_yday / 7;
         total = value;
     }
 };
@@ -44,12 +50,10 @@ private:
 public:
     MonthlyTotal() : year(0), month(0), total(0.0) {}
     void add(float amount) {
-        auto now = std::chrono::system_clock::now();
-        std::time_t t = std::chrono::system_clock::to_time_t(now);
-        std::tm local = *std::localtime(&t);
-        int currentYear;
-        int currentMonth;
-        total = 0.0;
+        const std::tm local = getLocalTimeNow();
+        int currentYear = local.tm_year + 1900;
+        int currentMonth = local.tm_mon;
+
         if (year != currentYear || month != currentMonth) {
             year = currentYear;
             month = currentMonth;
@@ -61,24 +65,23 @@ public:
         return total;
     }
     void set(float value){
+        const std::tm local = getLocalTimeNow();
+        year = local.tm_year + 1900;
+        month = local.tm_mon;
         total = value;
     }
 };
 class YearlyTotal {
 private:
     int year;
-    int month;
     float total;
 
 public:
-    YearlyTotal() : year(0), month(0), total(0.0) {}
+    YearlyTotal() : year(0), total(0.0) {}
     void add(float amount) {
-        auto now = std::chrono::system_clock::now();
-        std::time_t t = std::chrono::system_clock::to_time_t(now);
-        std::tm local = *std::localtime(&t);
-        int currentYear;
-        int currentMonth;
-        total = 0.0;
+        const std::tm local = getLocalTimeNow();
+        int currentYear = local.tm_year + 1900;
+
         if (year != currentYear) {
             year = currentYear;
             total = 0.0;
@@ -89,6 +92,8 @@ public:
         return total;
     }
     void set(float value) {
+        const std::tm local = getLocalTimeNow();
+        year = local.tm_year + 1900;
         total = value;
     }
 };

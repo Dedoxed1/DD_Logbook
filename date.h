@@ -1,9 +1,9 @@
 
 #pragma once
 #include <chrono>
-#include <iostream>
 #include <ctime>
 #include <iomanip>
+#include <iostream>
 #include <sstream>
 #include <string>
 #include <thread>
@@ -33,7 +33,7 @@ inline std::string getCurrentDatenoT() {
 /* Similar but different function used only for the welcome screen. As well as
 #threads for a dynamic text output. */
 
-inline WelcomeScreen() {
+inline void WelcomeScreen() {
     auto now = std::chrono::system_clock::now();
     std::time_t t = std::chrono::system_clock::to_time_t(now);
     std::tm local = *std::localtime(&t);
@@ -56,3 +56,4 @@ inline WelcomeScreen() {
 
 
 }
+
